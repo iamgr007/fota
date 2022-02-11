@@ -9,7 +9,7 @@ IOT_Version_IN = "IOT_V186"
 Input = ["BMS_V186", "IOT_V186"]
 ProcessedInput = []
 username = "iamgr007"
-client = Github('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')
+client = Github('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')
 # url = f"https://api.github.com/users/{username}"
 # user_data = requests.get(url).json()
 # pprint(user_data)
@@ -49,7 +49,7 @@ IOT_versions_available = []
 for p in ProcessedInput:
     if p[0] == "BMS":
         BMS_IN = p
-        print("BMS split:",BMS_IN)
+        print("BMS current version:",BMS_IN)
         BMS_IN_No = BMS_IN[1].replace('V','')
         for b in bms_contents:
             file = b.path
@@ -68,7 +68,7 @@ for p in ProcessedInput:
                         print("software is up to date")
     elif p[0] == "IOT":
         IOT_IN = p
-        print("IOT split:",IOT_IN)
+        print("IOT current version:",IOT_IN)
         IOT_IN_No = IOT_IN[1].replace('V','')
         for b in iot_contents:
             file = b.path
