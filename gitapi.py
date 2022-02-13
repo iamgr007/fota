@@ -4,12 +4,12 @@ import requests
 # import base64
 from github import Github
 
-BMS_Version_IN = "BMS_V186"
-IOT_Version_IN = "IOT_V186"
-Input = ["BMS_V186", "IOT_V186"]
+BMS_Version_IN = "V186"
+IOT_Version_IN = "V186"
+Input = ["V186", "V186"]
 ProcessedInput = []
 username = "iamgr007"
-client = Github('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')
+client = Github('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')
 # url = f"https://api.github.com/users/{username}"
 # user_data = requests.get(url).json()
 # pprint(user_data)
@@ -27,7 +27,8 @@ repository = f"https://github.com/{repo}"
 repo = client.get_repo("iamgr007/fota")
 bms_contents = repo.get_contents("/bms")
 iot_contents = repo.get_contents("/iot")
-# print(contents)
+print(bms_contents)
+print(iot_contents)
 # https://github.com/iamgr007/fota/blob/main/BMS_V0.BIN
 # https://github.com/iamgr007/fota/raw/main/bms/BMS_V186.BIN
 
@@ -37,16 +38,16 @@ iot_contents = repo.get_contents("/iot")
 # IOT_IN = IOT_Version_IN.split("_")
 # IOT_VersionNo_IN = IOT_IN[-1].replace('V','')
 # print("Exisiting IOT Version : ", IOT_VersionNo_IN)
-
-for i in range(len(Input)):
-    tmp = Input[i].split("_")
-    ProcessedInput.append(tmp)
+#
+# for i in range(len(Input)):
+#     # tmp = Input[i].split("_")
+#     ProcessedInput.append(tmp)
 # BMS_IN = ProcessedInput
 # print(ProcessedInput)
 BMS_versions_available = []
 IOT_versions_available = []
 
-for p in ProcessedInput:
+for p in Input:
     if p[0] == "BMS":
         BMS_IN = p
         print("BMS current version:",BMS_IN)
@@ -54,7 +55,7 @@ for p in ProcessedInput:
         for b in bms_contents:
             file = b.path
             content = file.split(".")
-            if content[-1] == "BIN":
+            if content[-1].split(".")[1] == "BIN":
                 BMS_fileName = content[0].split("_")
                 bmsversion = BMS_fileName[-1].split()
                 BMS_VersionNo = bmsversion[0].replace('V','')
@@ -73,7 +74,7 @@ for p in ProcessedInput:
         for b in iot_contents:
             file = b.path
             content = file.split(".")
-            if content[-1] == "BIN":
+            if content[-1].split(".")[1] == "BIN":
                 IOT_fileName = content[0].split("_")
                 iotversion = IOT_fileName[-1].split()
                 IOT_VersionNo = iotversion[0].replace('V','')
