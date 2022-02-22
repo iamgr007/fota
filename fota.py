@@ -1,62 +1,34 @@
 import requests
-from github import Github
-from flask import Flask,jsonify
-
+from flask import Flask,jsonify,request, send_from_directory
+import os
 app = Flask(__name__)
 
-username = "iamgr007"
-client = Github('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')
-
-repo = '{}/fota'.format(username)
-repository = f"https://github.com/{repo}"
-
-repo = client.get_repo("iamgr007/fota")
-
-
-
-bms_files = []
-iot_files = []
-bms_latest = []
-# BMS_versions_available = []
-Latest_version = []
+BMS_versions_available = []
+IOT_versions_available = []
 
 def getLatestBMS():
     global BMS_versions_available
     BMS_versions_available = []
-    bms_contents = repo.get_contents("/bms")
+    bms_contents = os.listdir('static/fota/bms/')
     print(bms_contents)
     for b in bms_contents:
-        file = b.path
-        bms_files.append(file.split("/")[1])
-        content = file.split("/")
-        if content[-1].split(".")[1] == "BIN":
-            # BMS_fileName = content[0].split("_")
-            bmsversion = content[-1].split('.')[0]
-            BMS_VersionNo = bmsversion.replace('V','')
-            BMS_versions_available.append(int(BMS_VersionNo))
+        bmsversion = b.split('.')[0]
+        BMS_VersionNo = bmsversion.replace('V','')
+        BMS_versions_available.append(int(BMS_VersionNo))
     print(max(BMS_versions_available))
     return(max(BMS_versions_available))
 
 def getLatestIOT():
     global IOT_versions_available
     IOT_versions_available = []
-    iot_contents = repo.get_contents("/iot")
+    iot_contents = os.listdir('static/fota/iot/')
     print(iot_contents)
     for t in iot_contents:
-        file = t.path
-        iot_files.append(file.split("/")[1])
-        content = file.split("/")
-        if content[-1].split(".")[1] == "BIN":
-            # IOT_fileName = content[0].split("_")
-            iotversion = content[-1].split('.')[0]
-            IOT_VersionNo = iotversion.replace('V','')
-            IOT_versions_available.append(int(IOT_VersionNo))
+        iotversion = t.split('.')[0]
+        IOT_VersionNo = iotversion.replace('V','')
+        IOT_versions_available.append(int(IOT_VersionNo))
     print(max(IOT_versions_available))
     return(max(IOT_versions_available))
-# print("bin file", bms_files)
-# print("versions available", BMS_versions_available)
-
-
 
 @app.route('/')
 def index():
@@ -65,11 +37,11 @@ def index():
 
 @app.route("/fota/bms/", methods=['GET'])
 def getBmsFiles():
-    return jsonify({'files':str(repo.get_contents("/bms"))})
+    return jsonify({'files':str(os.listdir('static/fota/bms/'))})
 
 @app.route("/fota/iot/", methods=['GET'])
 def getIotFiles():
-    return jsonify({'files':str(repo.get_contents("/iot"))})
+    return jsonify({'files':str(os.listdir('static/fota/iot/'))})
 
 @app.route("/fota/bms/<ver>", methods=['GET'])
 def getBMS(ver):
@@ -86,7 +58,6 @@ def getBMS(ver):
     except:
         print("invalid request")
         return jsonify({'update':0})
-
 
 @app.route("/fota/iot/<ver>", methods=['GET'])
 def getIOT(ver):
@@ -105,8 +76,13 @@ def getIOT(ver):
         return jsonify({'update':0})
 
 
-@app.route("/fota/iot", methods=['GET'])
-def get():
-    return jsonify({'files':iot_files})
+@app.route("/fota/iot/dwn/<path:path>", methods=['GET'])
+def downloadIOT(path):
+    return send_from_directory('static/fota/iot', path)
+
+@app.route("/fota/bms/dwn/<path:path>", methods=['GET'])
+def downloadBMS(path):
+    return send_from_directory('static/fota/bms', path)
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True,port=8080)

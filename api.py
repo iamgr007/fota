@@ -56,6 +56,7 @@ ota/bms/V185
 #if file exists
 {
   "update": 1,
+  .
   "filename": "V187"
 }
 
