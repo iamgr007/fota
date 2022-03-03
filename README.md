@@ -11,14 +11,23 @@ This Repository contains the files required for the FOTA (BMS and IoT) for the B
 ## Technologies
 Project is created with:
 * AWS (EC2)
-* Python
+* Python Flask
 * Git
+* nginx, gunicorn
 
 ## EC2 instance Setup
 To run this project, access the EC2 instance via SSH using its public DNS:
 
 ```
 $ ssh -i "flaskkey.pem" ubuntu@ec2-52-23-115-52.compute-1.amazonaws.com
+
+```
+
+To configure the falsk application:
+
+```
+$ cd /etc/nginx/sites-enabled
+$ sudo nano flaskapp
 
 ```
 
