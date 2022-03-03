@@ -1,7 +1,13 @@
 import requests
 from flask import Flask,jsonify,request, send_from_directory
 import os
+import logging
+
 app = Flask(__name__)
+gunicorn_error_logger = logging.getLogger('gunicorn.error')
+app.logger.handlers.extend(gunicorn_error_logger.handlers)
+app.logger.setLevel(logging.DEBUG)
+app.logger.debug('this will show in the log')
 
 BMS_versions_available = []
 IOT_versions_available = []
@@ -31,9 +37,15 @@ def getLatestIOT():
     return(max(IOT_versions_available))
 
 @app.route('/')
-def index():
-    return "iamgr007"
-#Welcome messages
+def default_route():
+    """Default route"""
+    app.logger.debug('this is a DEBUG message')
+    app.logger.info('this is an INFO message')
+    app.logger.warning('this is a WARNING message')
+    app.logger.error('this is an ERROR message')
+    app.logger.critical('this is a CRITICAL message')
+    return jsonify('iamgr007')
+
 
 @app.route("/fota/bms/", methods=['GET'])
 def getBmsFiles():
@@ -85,4 +97,12 @@ def downloadBMS(path):
     return send_from_directory('static/fota/bms', path)
 
 if __name__ == "__main__":
+    logHandler = logging.FileHandler('fota.log')
+    logHandler.setLevel(logging.INFO)
+    app.logger.addHandler(logHandler)
+    app.logger.setLevel(logging.INFO)
     app.run(debug=True,port=8080)
+else:
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
