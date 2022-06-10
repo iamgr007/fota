@@ -19,7 +19,7 @@ def getLatestBMS():
     print(bms_contents)
     for b in bms_contents:
         bmsversion = b.split('.')[0]
-        BMS_VersionNo = bmsversion.replace('V','')
+        BMS_VersionNo = bmsversion.replace('B','')
         BMS_versions_available.append(int(BMS_VersionNo))
     print(max(BMS_versions_available))
     return(max(BMS_versions_available))
