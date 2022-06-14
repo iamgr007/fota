@@ -2,6 +2,7 @@ import requests
 from flask import Flask,jsonify,request, send_from_directory
 import os
 import logging
+import ast
 
 app = Flask(__name__)
 gunicorn_error_logger = logging.getLogger('gunicorn.error')
@@ -19,8 +20,15 @@ def getLatestBMS():
     print(bms_contents)
     for b in bms_contents:
         bmsversion = b.split('.')[0]
-        BMS_VersionNo = bmsversion.replace('B','')
-        BMS_versions_available.append(int(BMS_VersionNo))
+        print(bmsversion)
+        BMS_Version = bmsversion.replace('V','')
+        print(BMS_Version)
+        temp = BMS_Version.replace('B','')
+        BMS_VersionNo_HEX = '0x'+str(temp)
+        print(BMS_VersionNo_HEX)
+        BMS_VersionNo_INT = ast.literal_eval(BMS_VersionNo_HEX)
+        print(BMS_VersionNo_INT)
+        BMS_versions_available.append(int(BMS_VersionNo_INT))
     print(max(BMS_versions_available))
     return(max(BMS_versions_available))
 
@@ -59,9 +67,11 @@ def getIotFiles():
 def getBMS(ver):
     print(ver)
     try:
-        ver = int(ver)
+        tmp = '0x'+str(ver)
+        verINT = ast.literal_eval(tmp)
+        print(verINT)
         Lastest_version = getLatestBMS()
-        if ver<Lastest_version:
+        if verINT<Lastest_version:
             print("update available")
             return jsonify({'update':1, 'file':getLatestBMS()})
         else:
