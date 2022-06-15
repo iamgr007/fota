@@ -67,13 +67,14 @@ def getIotFiles():
 def getBMS(ver):
     print(ver)
     try:
-        tmp = '0x'+str(ver)
+        tp = ver.replace('B','')
+        tmp = '0x'+str(tp)
         verINT = ast.literal_eval(tmp)
         print(verINT)
         Lastest_version = getLatestBMS()
         if verINT<Lastest_version:
             print("update available")
-            return jsonify({'update':1, 'file':getLatestBMS()})
+            return jsonify({'update':1, 'file':ver})
         else:
             print("device already up to date")
             return jsonify({'update':0})
