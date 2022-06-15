@@ -74,7 +74,7 @@ def getBMS(ver):
         Lastest_version = getLatestBMS()
         if verINT<Lastest_version:
             print("update available")
-            return jsonify({'update':1, 'file':ver})
+            return jsonify({'update':1, 'file':hex(getLatestBMS()).replace('0x','B')})
         else:
             print("device already up to date")
             return jsonify({'update':0})
