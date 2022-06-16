@@ -23,7 +23,7 @@ $ ssh -i "flaskkey.pem" ubuntu@ec2-52-23-115-52.compute-1.amazonaws.com
 
 ```
 
-To configure the falsk application:
+To configure the flask application:
 
 ```
 $ cd /etc/nginx/sites-enabled

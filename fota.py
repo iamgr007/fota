@@ -1,8 +1,9 @@
 import requests
-from flask import Flask,jsonify,request, send_from_directory
+from flask import Flask,json.dumps,request, send_from_directory
 import os
 import logging
 import ast
+import json
 
 app = Flask(__name__)
 gunicorn_error_logger = logging.getLogger('gunicorn.error')
@@ -52,16 +53,16 @@ def default_route():
     app.logger.warning('this is a WARNING message')
     app.logger.error('this is an ERROR message')
     app.logger.critical('this is a CRITICAL message')
-    return jsonify('iamgr007')
+    return json.dumps('iamgr007')
 
 
 @app.route("/fota/bms/", methods=['GET'])
 def getBmsFiles():
-    return jsonify({'files':str(os.listdir('static/fota/bms/'))})
+    return json.dumps({'files':str(os.listdir('static/fota/bms/'))})
 
 @app.route("/fota/iot/", methods=['GET'])
 def getIotFiles():
-    return jsonify({'files':str(os.listdir('static/fota/iot/'))})
+    return json.dumps({'files':str(os.listdir('static/fota/iot/'))})
 
 @app.route("/fota/bms/<ver>", methods=['GET'])
 def getBMS(ver):
@@ -74,13 +75,13 @@ def getBMS(ver):
         Lastest_version = getLatestBMS()
         if verINT<Lastest_version:
             print("update available")
-            return jsonify({'update':1, 'file':hex(getLatestBMS()).replace('0x','B')})
+            return json.dumps({'update':1, 'Latest file':hex(getLatestBMS()).replace('0x','B')})
         else:
             print("device already up to date")
-            return jsonify({'update':0})
+            return json.dumps({'update':0})
     except:
         print("invalid request")
-        return jsonify({'update':0})
+        return json.dumps({'update':0})
 
 @app.route("/fota/iot/<ver>", methods=['GET'])
 def getIOT(ver):
@@ -90,13 +91,13 @@ def getIOT(ver):
         Lastest_version = getLatestIOT()
         if ver<Lastest_version:
             print("update available")
-            return jsonify({'update':1, 'file':getLatestIOT()})
+            return json.dumps({'update':1, 'Latest file':getLatestIOT()})
         else:
             print("device already up to date")
-            return jsonify({'update':0})
+            return json.dumps({'update':0})
     except:
         print("invalid request")
-        return jsonify({'update':0})
+        return json.dumps({'update':0})
 
 
 @app.route("/fota/iot/dwn/<path:path>", methods=['GET'])
